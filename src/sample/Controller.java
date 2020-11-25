@@ -42,15 +42,15 @@ public class Controller {
     }
 
     public void init() {
+        sirs.setCanvas(canvas);
         width = (int)canvas.getWidth();
         height = (int)canvas.getHeight();
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        int grayScale = 200;
-        gc.setFill(Color.rgb(grayScale, grayScale, grayScale));
-        gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+        sirs.createModel(height, width);
     }
 
     public void stop() {
         sirs.clearSimulation();
+        sirs.stop();
     }
 }

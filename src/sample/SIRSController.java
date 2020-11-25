@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -14,12 +17,14 @@ public class SIRSController {
     public void createModel(int rows, int cols) {
         this.rows = rows; this.cols = cols;
         model.setUpGrid(rows, cols);
+        model.init();
+        display.show();
     }
 
-    public void updateChanges(int id) {
+    public void updateChanges(int index) {
         try {
-            for (int i = istart[id]; i < iend[id]; i++) {
-                for (int j = jstart[id]; j < jend[id]; j++) {
+            for (int i = istart[index]; i < iend[index]; i++) {
+                for (int j = jstart[index]; j < jend[index]; j++) {
                     model.update(i, j);
                 }
             }
@@ -34,7 +39,6 @@ public class SIRSController {
             jstart = new int[9],
             jend = new int[9];
     int id = 0;
-    Lock lock = new ReentrantLock();
     int updated = 0;
     //multi-thread changes
     public void run() {
@@ -61,7 +65,7 @@ public class SIRSController {
                 }
                 index++;
                 Thread t = new Thread(() -> {
-                    updateChanges(id++);
+                    updateChanges(updateID());
                 });
                 t.start();
             }
@@ -71,10 +75,13 @@ public class SIRSController {
         model.buffer = temp;
     }
 
+    public synchronized int updateID() {
+        id++;
+        return id-1;
+    }
     public synchronized void setUpdate(int inc) {
         updated += inc;
     }
-
     public synchronized void update(boolean bool) {
         updating = bool;
     }
@@ -84,12 +91,12 @@ public class SIRSController {
     public void beginSimulation() {
         running = true;
         paused = false;
-        model.init();
         while (running) {
             if(updated == 9) {
                 update(false);
+                display.show();
             }
-            if(!paused && !updating) {
+            if(!paused && !updating && !display.isDisplaying()) {
                 run();
             }
         }
@@ -106,5 +113,15 @@ public class SIRSController {
         paused = true;
         running = false;
         model.setUpGrid(rows, cols);
+    }
+
+    public void stop() {
+        display.stop();
+    }
+
+    GraphicsContext g;
+    public void setCanvas(Canvas canvas) {
+        display.setCanvas(canvas.getGraphicsContext2D());
+        g = canvas.getGraphicsContext2D();
     }
 }

@@ -30,7 +30,7 @@ public class SIRSModel {
         //selected random point
         int i = rand.nextInt(grid.length);
         int j = rand.nextInt(grid[0].length);
-        buffer[i][j] = State.INFECTED;
+        grid[i][j] = State.INFECTED;
         updateInfected();
     }
 
@@ -117,6 +117,11 @@ public class SIRSModel {
     public void setUpGrid() {
         grid = new State[rows][cols];
         buffer = new State[rows][cols];
+        for(int i = 0; i < rows; i++)
+            for(int j = 0; j < cols; j++) {
+                grid[i][j] = State.NON_INFECTED;
+                buffer[i][j] = State.NON_INFECTED;
+            }
     }
 
     public void setUpGrid(int r, int c) {
