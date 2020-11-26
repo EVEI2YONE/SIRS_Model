@@ -39,7 +39,7 @@ public class Controller {
             }
             else
                 System.out.println("already playing");
-        }
+        }//TODO: FIX MULTITHREADING ISSUE WITH BUTTON COMBINATIONS
         if(actionEvent.getSource() == reset) {
             sirs.clearSimulation();
             isReset = true;

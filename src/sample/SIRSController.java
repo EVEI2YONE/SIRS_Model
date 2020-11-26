@@ -90,12 +90,7 @@ public class SIRSController {
         id = 0;
         displaying = true;
         displayed = 0;
-        for (int i = 0; i < size-1; i++) {
-            Thread t = new Thread(() -> {
-                parseGrid(updateID(), "display");
-            });
-            t.start();
-        }
+        parseGrid(size-1, "display");
     }
     public void run() { //h: 450, w: 600 -> 150 x 200
         id = 0;
@@ -134,9 +129,13 @@ public class SIRSController {
 
     public void clearSimulation() {
         paused = false;
-        running = false;
         display.setCanvas(null);
-        try { Thread.sleep(10); } catch(Exception ex) {}
+        //let updating thread force into displaying state
+        while(running && updating) {}
+        //let 2nd main thread exit
+        running = false;
+        //wait for displaying state to end thread
+        try { Thread.sleep(5); } catch(Exception ex){}
         display.setCanvas(g);
         createModel(rows, cols);
         resetValues();
