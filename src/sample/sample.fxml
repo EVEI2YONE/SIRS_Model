@@ -7,7 +7,7 @@
 <HBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="836.0" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <Canvas fx:id="canvas" height="450.0" width="600.0" />
-      <VBox prefHeight="400.0" prefWidth="221.0">
+      <VBox prefHeight="450.0" prefWidth="237.0">
          <children>
             <HBox prefHeight="37.0" prefWidth="200.0">
                <children>
@@ -20,6 +20,12 @@
                <children>
                   <Label text="Statistics" />
                   <Label text="Susceptible" />
+                  <HBox prefHeight="23.0" prefWidth="221.0">
+                     <children>
+                        <Label text="Initial Infected: " />
+                        <TextArea fx:id="textArea_initial" maxHeight="20.0" prefHeight="20.0" prefWidth="42.0" text="1" />
+                     </children>
+                  </HBox>
                </children>
             </VBox>
             <VBox prefHeight="200.0" prefWidth="100.0">

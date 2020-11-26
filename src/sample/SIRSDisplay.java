@@ -19,6 +19,7 @@ public class SIRSDisplay {
     }
 
     private synchronized void draw(int i, int j, Color col) {
+        if(g == null) return;
         g.setFill(col);
         g.fillRect(i, j, 1, 1);
     }

@@ -30,7 +30,7 @@ public class SIRSModel {
     public double infectionRate;// = .8 / iterations;
     public double recoveryRate;// = .5 / iterations;
     public double immunityLossRate;// = .3 / iterations;
-    private int initial = 4;
+    public int initial = 1;
     private int durationStart = 7;
     private int durationLen;
     private int immunityStart = 14;
@@ -79,13 +79,6 @@ public class SIRSModel {
         int j = rand.nextInt(grid[0].length);
         grid[i][j] = State.INFECTED;
         updateInfected();
-
-//        while(getInfected() < initial) {
-//            //infect random number of people
-//            int ioff = (int)((rand.nextDouble()-.5)*radius);
-//            int joff = (int)((rand.nextDouble()-.5)*radius);
-//            update(i+ioff, j+joff);
-//        }
     }
 
     public void update(int i, int j) {

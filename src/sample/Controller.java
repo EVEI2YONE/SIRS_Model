@@ -6,9 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
+import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 
@@ -26,7 +25,7 @@ public class Controller {
             if(isReset) {
                isReset = false;
                paused = false;
-
+               sirs.setCanvas(canvas);
                Thread t = new Thread(() -> {
                    //sirs.beginSimulation();
                    //sirs.testStart();
@@ -41,14 +40,13 @@ public class Controller {
             else
                 System.out.println("already playing");
         }
-        else if(actionEvent.getSource() == pause) {
-            paused = true;
-            sirs.pauseSimulation();
-        }
-        else if(actionEvent.getSource() == reset) {
+        if(actionEvent.getSource() == reset) {
             sirs.clearSimulation();
             isReset = true;
-            sirs.createModel(height, width);
+        }
+        if(actionEvent.getSource() == pause) {
+            paused = true;
+            sirs.pauseSimulation();
         }
     }
 
@@ -58,7 +56,8 @@ public class Controller {
         height = (int)canvas.getHeight();
         GraphicsContext gc = canvas.getGraphicsContext2D();
         sirs.createModel(width, height); //h: 450, w: 600
-        updateSlider();
+        setUpSliders();
+        setUpTextFields();
     }
 
     public void stop() {
@@ -79,7 +78,7 @@ public class Controller {
     @FXML
     Label label_immunity_loss_rate;
 
-    public void updateSlider() {
+    public void setUpSliders() {
         sirs.model.updateRate("infection", .3);
         sirs.model.updateRate("recovery", .2);
         sirs.model.updateRate("immunityLoss", .3);
@@ -100,6 +99,21 @@ public class Controller {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
                 sirs.model.updateRate("immunityLoss", new_val.doubleValue()/100);
                 label_immunity_loss_rate.setText(String.format("%.2f", new_val.doubleValue()));
+            }
+        });
+    }
+
+    @FXML
+    TextArea textArea_initial;
+
+    //TODO: Figure out why textChange -> reset -> Thread error
+    public void setUpTextFields() {
+        textArea_initial.textProperty().addListener(e -> {
+            try {
+                int initial = Integer.parseInt(textArea_initial.getText());
+                sirs.model.initial = initial;
+            } catch(Exception ex) {
+                System.out.println("Invalid initial input");
             }
         });
     }

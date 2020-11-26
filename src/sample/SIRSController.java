@@ -67,6 +67,7 @@ public class SIRSController {
             //parse subgrid
             for (int i = istart[index]; i < iend[index]; i++) {
                 for (int j = jstart[index]; j < jend[index]; j++) {
+                    if(display.g == null) return;
                     if(type.equals("update"))
                         model.update(i, j);
                     else if(type.equals("display"))
@@ -132,9 +133,19 @@ public class SIRSController {
     }
 
     public void clearSimulation() {
-        paused = true;
+        paused = false;
         running = false;
-        model.setUpGrid(rows, cols);
+        display.setCanvas(null);
+        try { Thread.sleep(10); } catch(Exception ex) {}
+        display.setCanvas(g);
+        createModel(rows, cols);
+        resetValues();
+    }
+    private void resetValues() {
+        thread_updating  = false; thread_displaying  = false;
+        running = false; paused = false; reset = false;
+        updated = 0; displayed = 0;
+        updating  = false; displaying  = false;
     }
 
     public void stop() {
