@@ -20,7 +20,18 @@ public class Main extends Application {
         primaryStage.show();
     }
 
-
+    /*
+        TODO FEATURES:
+            CREATE LAND STRUCTURE/OUTLINE: class model LandGenerator
+            CREATE EMPTY SPACE WITH 'PEOPLE': improve SIRSModel logic
+            CREATE CONNECTING EDGES BETWEEN LAND TO TRAVEL (DURATION?): class model Edge
+            ALLOW 'PEOPLE' TO RANDOMLY(?) MOVE ABOUT: class model MovementLogic
+            ADDITIONAL RATES (BIRTH RATE, DEATH RATE):
+                3 CASES REGARDING THEIR RATES <, ==, >
+                OBVIOUSLY, BUT CONSIDER THEIR IMPLICATIONS ON LATER SIRSModel LOGIC
+            SIMULATE
+            EL FIN
+     */
     public static void main(String[] args) {
         launch(args);
         controller.stop();

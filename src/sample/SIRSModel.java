@@ -26,7 +26,7 @@ public class SIRSModel {
     public int radius = 10; //manhattan distance or layers?
     public State[][] grid;
     public State[][] buffer;
-    public double iterations = 40;
+    public double iterations = 60; //40 <= iterations <= 100
     public double infectionRate;// = .8 / iterations;
     public double recoveryRate;// = .5 / iterations;
     public double immunityLossRate;// = .3 / iterations;
@@ -51,6 +51,7 @@ public class SIRSModel {
     public void setUpGrid() {
         population = rows*cols;
         nonInfected = population;
+        reset();
 
         grid = new State[rows][cols];
         buffer = new State[rows][cols];
@@ -59,6 +60,17 @@ public class SIRSModel {
                 grid[i][j] = State.NON_INFECTED;
                 buffer[i][j] = State.NON_INFECTED;
             }
+    }
+
+    public void reset() {
+        infected = 0;
+        recovered = 0;
+
+        nonInfectedDeaths = 0;
+        infectedDeaths = 0;
+        recoveredDeaths = 0;
+
+        births = 0;
     }
 
     public void setUpGrid(int r, int c) {
@@ -136,7 +148,28 @@ public class SIRSModel {
         return infected;
     }
 
-    private boolean manhattanDistance(int i, int j) {
+    private boolean manhattanDistance(int r, int c) {
+        //parse layered neighbors
+        for(int i = -radius; i < radius; i++) {
+            for(int j = -radius; j < radius; j++) {
+                if(i == 0 && j == 0) continue; //skip self
+                int row = i+r; int col = c+j;
+                //check if neighbor is inbounds
+                if(inBounds(row, col) && Math.abs(r+c) <= radius) {
+                    //check if neighbor is sick and calculate infection chance
+                    if(grid[row][col] == State.INFECTED) {
+                        //TODO: Think of diminishing weights as layers increase
+                        double distance;
+                        //distance = 1.0/(Math.abs(i) + Math.abs(j));
+                        distance = 1.0;
+                        double infectionChance = rand.nextDouble() * distance;
+                        if(infectionChance < infectionRate) {
+                            return true; //break out of loop, reduce computation
+                        }
+                    }
+                }
+            }
+        }
         return false;
     }
 
