@@ -30,7 +30,8 @@ public class Main extends Application {
                 3 CASES REGARDING THEIR RATES <, ==, >
                 OBVIOUSLY, BUT CONSIDER THEIR IMPLICATIONS ON LATER SIRSModel LOGIC
             SIMULATE
-            EL FIN
+            EL FIN...
+            SIMULATION CONTROLLER
      */
     public static void main(String[] args) {
         launch(args);

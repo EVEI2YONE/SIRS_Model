@@ -15,15 +15,12 @@ public class SIRSModel {
                 immunityLossRate = value; immunityLossRate /= iterations;
                 break;
         }
-        System.out.println("infection: " + infectionRate);
-        System.out.println("recovery: " + recoveryRate);
-        System.out.println("immunity loss: " + immunityLossRate);
     }
 
     public enum State { NON_INFECTED, INFECTED, RECOVERED, INFECTED_DEAD, NON_INFECTED_DEAD };
     private Random rand = new Random();
 
-    public int radius = 10; //manhattan distance or layers?
+    public int radius = 2; //manhattan distance or layers?
     public State[][] grid;
     public State[][] buffer;
     public double iterations = 60; //40 <= iterations <= 100
@@ -100,7 +97,7 @@ public class SIRSModel {
             //if non-infected, calculate chance of infection (or die)?
             case NON_INFECTED:
                 //search neighboring cells and calculate chance repeatedly (with weights based on distance)
-                if(search(i, j, "layer")) {
+                if(search(i, j, "manhattan")) {
                     buffer[i][j] = State.INFECTED;
                     updateInfected();
                 }
@@ -155,7 +152,7 @@ public class SIRSModel {
                 if(i == 0 && j == 0) continue; //skip self
                 int row = i+r; int col = c+j;
                 //check if neighbor is inbounds
-                if(inBounds(row, col) && Math.abs(r+c) <= radius) {
+                if(inBounds(row, col) && Math.abs(i)+Math.abs(j) <= radius) {
                     //check if neighbor is sick and calculate infection chance
                     if(grid[row][col] == State.INFECTED) {
                         //TODO: Think of diminishing weights as layers increase

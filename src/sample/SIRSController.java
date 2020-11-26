@@ -122,7 +122,7 @@ public class SIRSController {
         if(!paused) return; //don't launch another thread while it's running
         paused = false;
         Thread t = new Thread(() -> {
-            sync();
+            beginSimulation();
         });
         t.start();
     }
@@ -175,7 +175,7 @@ public class SIRSController {
     int updated = 0, displayed = 0;
     boolean updating, displaying;
 
-    public void sync() {
+    public void beginSimulation() {
         normalizeTime();
         running = true;
         int population = model.getPopulation();
@@ -212,12 +212,5 @@ public class SIRSController {
             end = System.nanoTime();
             timeElapsed += end - start;
         }
-    }
-
-    public void results() {
-        System.out.println("infected: " + model.getInfected());
-        System.out.println("non-infected: " + model.getNonInfected());
-        System.out.println("recovered: " + model.getRecovered());
-        System.out.println("----------------");
     }
 }

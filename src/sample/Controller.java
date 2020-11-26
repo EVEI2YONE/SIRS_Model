@@ -7,9 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.*;
-import javafx.scene.input.InputMethodEvent;
-import javafx.scene.input.ScrollEvent;
-import javafx.scene.paint.Color;
 
 public class Controller {
     SIRSController sirs = new SIRSController();
@@ -27,9 +24,7 @@ public class Controller {
                paused = false;
                sirs.setCanvas(canvas);
                Thread t = new Thread(() -> {
-                   //sirs.beginSimulation();
-                   //sirs.testStart();
-                   sirs.sync();
+                   sirs.beginSimulation();
                });
                t.start();
             }
