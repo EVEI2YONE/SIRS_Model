@@ -6,24 +6,25 @@ public class SIRSModel {
     public void updateRate(String type, double value) {
         switch(type) {
             case "infection":
-                infectionRate = value; infectionRate /= iterations;
+                infectionRate = value; infectionRate /= timeNormalizer;
                 break;
             case "recovery":
-                recoveryRate = value; recoveryRate /= iterations;
+                recoveryRate = value; recoveryRate /= timeNormalizer;
                 break;
             case "immunityLoss":
-                immunityLossRate = value; immunityLossRate /= iterations;
+                immunityLossRate = value; immunityLossRate /= timeNormalizer;
                 break;
         }
     }
 
-    public enum State { NON_INFECTED, INFECTED, RECOVERED, INFECTED_DEAD, NON_INFECTED_DEAD };
+    public enum State { NON_INFECTED, INFECTED, RECOVERED, INFECTED_DEAD, NON_INFECTED_DEAD, EMPTY, BORDER, TRANSPORTATION };
     private Random rand = new Random();
 
-    public int radius = 2; //manhattan distance or layers?
+    public int radius = 5; //manhattan distance or layers?
     public State[][] grid;
     public State[][] buffer;
-    public double iterations = 60; //40 <= iterations <= 100
+    public String searchType = "layer"; //"manhattan" or "layer"
+    public double timeNormalizer = 40; //40 <= timeNormalizer <= 100
     public double infectionRate;// = .8 / iterations;
     public double recoveryRate;// = .5 / iterations;
     public double immunityLossRate;// = .3 / iterations;
@@ -97,7 +98,7 @@ public class SIRSModel {
             //if non-infected, calculate chance of infection (or die)?
             case NON_INFECTED:
                 //search neighboring cells and calculate chance repeatedly (with weights based on distance)
-                if(search(i, j, "manhattan")) {
+                if(search(i, j, searchType)) {
                     buffer[i][j] = State.INFECTED;
                     updateInfected();
                 }
@@ -128,7 +129,7 @@ public class SIRSModel {
                     buffer[i][j] = State.RECOVERED;
                 break;
             default:
-                buffer[i][j] = State.NON_INFECTED;
+                buffer[i][j] = grid[i][j];
         }
     }
 

@@ -31,6 +31,7 @@ public class Controller {
             else if(paused) {
                 sirs.continueSimulation();
                 paused = false;
+                sirs.runTime();
             }
             else
                 System.out.println("already playing");
@@ -38,6 +39,8 @@ public class Controller {
         if(actionEvent.getSource() == reset) {
             sirs.clearSimulation();
             isReset = true;
+            sirs.runTime();
+            sirs.seconds = 0;
         }
         if(actionEvent.getSource() == pause) {
             paused = true;

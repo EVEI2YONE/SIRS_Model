@@ -25,8 +25,9 @@ public class SIRSController {
         show();
     }
 
-    int sections = 2;
-    int size = sections*2+1;
+    int rowsections = 1;
+    int colsections = 2;
+    int size = (rowsections + colsections)+1;
     int[] istart = new int[size],
             iend = new int[size],
             jstart = new int[size],
@@ -34,19 +35,19 @@ public class SIRSController {
     public void prepRegions() {
         int index = 0;
         int rows = model.grid.length;
-        int rowLen = rows/sections;
+        int rowLen = rows/rowsections;
         int cols = model.grid[0].length;
-        int colLen = cols/sections;
-        for(int i = 0; i < sections; i++) {
-            for(int j = 0; j < sections; j++) {
-                istart[index] = i * (rows/sections);
+        int colLen = cols/colsections;
+        for(int i = 0; i < rowsections; i++) {
+            for(int j = 0; j < colsections; j++) {
+                istart[index] = i * (rows/rowsections);
                 iend[index] = istart[index] + rowLen;
-                if(i == sections-1) {
+                if(i == rowsections-1) {
                     iend[index] = rows;
                 }
-                jstart[index] = j*(cols/sections);
+                jstart[index] = j*(cols/colsections);
                 jend[index] = jstart[index] + colLen;
-                if(j == sections-1) {
+                if(j == colsections-1) {
                     jend[index] = cols;
                 }
                 index++;
@@ -175,6 +176,8 @@ public class SIRSController {
     int updated = 0, displayed = 0;
     boolean updating, displaying;
 
+    int frames = 0;
+    int seconds = 0;
     public void beginSimulation() {
         normalizeTime();
         running = true;
@@ -191,6 +194,11 @@ public class SIRSController {
             start = System.nanoTime();
             //60 frames per second, i think...
             if (timeElapsed >= frameCap) {
+                if(frames == frameLimit) {
+                    frames -= frameLimit;
+                    seconds++;
+                    System.out.println(seconds);
+                }
                 timeElapsed -= frameCap;
                 if (!thread_updating && !thread_displaying) {
                     Platform.runLater(() -> {
@@ -198,7 +206,6 @@ public class SIRSController {
                         parseGrid(size - 1, "update");
                         model.swap();
                         thread_updating = false;
-
                     });
                 }
                 if (!thread_displaying) {
@@ -208,9 +215,13 @@ public class SIRSController {
                         thread_displaying = false;
                     });
                 }
+                frames++;
             }
             end = System.nanoTime();
             timeElapsed += end - start;
         }
+    }
+    public void runTime() {
+        System.out.println("seconds: " + seconds);
     }
 }
