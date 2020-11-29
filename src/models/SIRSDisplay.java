@@ -1,11 +1,12 @@
-package sample;
+package models;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import models.SIRSModel;
 
 public class SIRSDisplay {
-    SIRSModel model;
-    GraphicsContext g;
+    public SIRSModel model;
+    public GraphicsContext g;
     public Color
         nonInfected = Color.LIGHTGREEN,
         infected = Color.RED,

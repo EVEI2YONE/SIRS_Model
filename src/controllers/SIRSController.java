@@ -1,12 +1,11 @@
-package sample;
+package controllers;
 
 import javafx.application.Platform;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
+import javafx.scene.control.Label;
+import models.SIRSDisplay;
+import models.SIRSModel;
 
 public class SIRSController {
     SIRSModel model = new SIRSModel();
@@ -197,7 +196,9 @@ public class SIRSController {
                 if(frames == frameLimit) {
                     frames -= frameLimit;
                     seconds++;
-                    System.out.println(seconds);
+                    Platform.runLater(() -> {
+                        updateStats();
+                    });
                 }
                 timeElapsed -= frameCap;
                 if (!thread_updating && !thread_displaying) {
@@ -221,7 +222,16 @@ public class SIRSController {
             timeElapsed += end - start;
         }
     }
-    public void runTime() {
-        System.out.println("seconds: " + seconds);
+
+    Label susceptible, infected, recovered;
+    public void setLabels(Label label_susceptible, Label label_infected, Label label_recovered) {
+        susceptible = label_susceptible;
+        infected = label_infected;
+        recovered = label_recovered;
+    }
+    public void updateStats(){
+        susceptible.setText(String.format("%d", model.getSusceptible()));
+        infected.setText(String.format("%d", model.getInfected()));
+        recovered.setText(String.format("%d", model.getRecovered()));
     }
 }

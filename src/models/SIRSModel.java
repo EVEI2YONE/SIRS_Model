@@ -1,4 +1,4 @@
-package sample;
+package models;
 
 import java.util.Random;
 
@@ -36,7 +36,7 @@ public class SIRSModel {
 
     private int population;
     private int infected;
-    private int nonInfected;
+    private int susceptible;
     private int recovered;
 
     private int infectedDeaths;
@@ -48,7 +48,7 @@ public class SIRSModel {
     private int rows = 50, cols = 50;
     public void setUpGrid() {
         population = rows*cols;
-        nonInfected = population;
+        susceptible = population;
         reset();
 
         grid = new State[rows][cols];
@@ -208,7 +208,7 @@ public class SIRSModel {
         return population;
     }
     public int getInfected() { return infected; }
-    public int getNonInfected() { return nonInfected; }
+    public int getSusceptible() { return susceptible; }
     public int getRecovered() { return recovered; }
     public int getDeaths() {
         return nonInfectedDeaths+infectedDeaths+recoveredDeaths;
@@ -216,7 +216,7 @@ public class SIRSModel {
 
     //non-infected -> infected
     private synchronized void updateInfected() {
-        nonInfected--;
+        susceptible--;
         infected++;
     }
     //infected -> recovered
@@ -227,7 +227,7 @@ public class SIRSModel {
     //recovered -> non-infected
     private synchronized void updateImmunityLoss() {
         recovered--;
-        nonInfected++;
+        susceptible++;
     }
     private void nonInfectedDeath(int deaths) {
         nonInfectedDeaths += deaths;
