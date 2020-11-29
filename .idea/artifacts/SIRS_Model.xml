@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="SIRS_Model">
+    <output-path>$PROJECT_DIR$/out/artifacts/SIRS_Model</output-path>
+    <root id="archive" name="SIRS_Model.jar">
+      <element id="archive" name="SIRS_Model.jar">
+        <element id="module-output" name="SIRS_Model" />
+      </element>
+    </root>
+  </artifact>
+</component>
