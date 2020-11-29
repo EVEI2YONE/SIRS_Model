@@ -81,31 +81,47 @@ public class Controller implements Initializable {
     @FXML
     TextArea textArea_initial;
 
-    //TODO: Figure out why textChange -> reset -> Thread error
+    private boolean strippingNewLines = false;
     public void setUpTextFields() {
         textArea_initial.textProperty().addListener(e -> {
+            if(strippingNewLines) return;
             try {
+                strippingNewLines = true;
+                String t = textArea_initial.getText();
+                t = t.replaceAll("\\n", "");
+                textArea_initial.setText(t);
                 int initial = Integer.parseInt(textArea_initial.getText());
-                sirs.model.initial = initial;
+                sirs.model.setInitial(initial);
             } catch(Exception ex) {
                 System.out.println("Invalid initial input");
             }
+            strippingNewLines = false;
         });
     }
 
     @FXML
     Slider slider_infection,
            slider_recovery,
-           slider_immunity_loss;
+           slider_immunity_loss,
+           slider_time;
     @FXML
     Label label_infection_rate,
           label_recovery_rate,
-          label_immunity_loss_rate;
+          label_immunity_loss_rate,
+          label_time;
 
     public void setUpSliders() {
+        sirs.model.setTimeNormalizer(.50);
         sirs.model.updateRate("infection", .3);
         sirs.model.updateRate("recovery", .2);
         sirs.model.updateRate("immunityLoss", .3);
+
+        slider_time.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+                sirs.model.setTimeNormalizer(new_val.doubleValue()/100.0);
+                label_time.setText((int)new_val.doubleValue() + "%");
+            }
+        });
 
         slider_infection.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
@@ -122,7 +138,7 @@ public class Controller implements Initializable {
         slider_immunity_loss.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
                 sirs.model.updateRate("immunityLoss", new_val.doubleValue()/100);
-                label_immunity_loss_rate.setText(String.format("%.2f", new_val.doubleValue()));
+                label_immunity_loss_rate.setText((int)new_val.doubleValue() + "%");
             }
         });
     }

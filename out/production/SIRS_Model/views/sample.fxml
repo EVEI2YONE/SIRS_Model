@@ -60,6 +60,13 @@
                <children>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
+                        <Label text="Time Rate: " />
+                        <Label fx:id="label_time" text="50%" />
+                     </children>
+                  </HBox>
+                   <Slider fx:id="slider_time" blockIncrement="1.0" minorTickCount="5" showTickLabels="true" showTickMarks="true" value="50.0" />
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
                         <Label text="Infection Rate: " />
                         <Label fx:id="label_infection_rate" text="30%" />
                      </children>

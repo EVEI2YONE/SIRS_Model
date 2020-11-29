@@ -193,12 +193,12 @@ public class SIRSController {
             start = System.nanoTime();
             //60 frames per second, i think...
             if (timeElapsed >= frameCap) {
+                Platform.runLater(() -> {
+                    updateStats();
+                });
                 if(frames == frameLimit) {
                     frames -= frameLimit;
                     seconds++;
-                    Platform.runLater(() -> {
-                        updateStats();
-                    });
                 }
                 timeElapsed -= frameCap;
                 if (!thread_updating && !thread_displaying) {

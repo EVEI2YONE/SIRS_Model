@@ -22,4 +22,6 @@ public class Main extends Application {
         launch(args);
         controller.stop();
     }
+
+    public static double fade(double ratio) { return 6*Math.pow(ratio, 5)-15*Math.pow(ratio,4)+10*Math.pow(ratio,3); };
 }

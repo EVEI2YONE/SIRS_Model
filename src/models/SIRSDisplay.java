@@ -33,6 +33,7 @@ public class SIRSDisplay {
         if(model == null) return;
         SIRSModel.State person = model.grid[i][j];
         if(person == null) return;
+        if(model.grid[i][j] == model.buffer[i][j]) return;
         switch(person) {
             case INFECTED:
                 draw(i, j, infected);

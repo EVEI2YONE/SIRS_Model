@@ -6,13 +6,13 @@ public class SIRSModel {
     public void updateRate(String type, double value) {
         switch(type) {
             case "infection":
-                infectionRate = value; infectionRate /= timeNormalizer;
+                infectionRate = value; normInfection = infectionRate/timeNormalizer;
                 break;
             case "recovery":
-                recoveryRate = value; recoveryRate /= timeNormalizer;
+                recoveryRate = value; normRecovery = recoveryRate/timeNormalizer;
                 break;
             case "immunityLoss":
-                immunityLossRate = value; immunityLossRate /= timeNormalizer;
+                immunityLossRate = value; normImmunityLoss = immunityLossRate/timeNormalizer;
                 break;
         }
     }
@@ -21,27 +21,35 @@ public class SIRSModel {
     private Random rand = new Random();
 
     public int radius = 5; //manhattan distance or layers?
-    public State[][] grid;
-    public State[][] buffer;
+    public State[][] grid, buffer;
     public String searchType = "layer"; //"manhattan" or "layer"
-    public double timeNormalizer = 40; //40 <= timeNormalizer <= 100
-    public double infectionRate;// = .8 / iterations;
-    public double recoveryRate;// = .5 / iterations;
-    public double immunityLossRate;// = .3 / iterations;
-    public int initial = 1;
-    private int durationStart = 7;
-    private int durationLen;
-    private int immunityStart = 14;
-    private int immunityLen;
+    private double
+        timeNormalizer,// = 40, //40 <= timeNormalizer <= 1000
+        infectionRate,
+        recoveryRate,
+        immunityLossRate;
+    private double
+        normInfection,
+        normRecovery,
+        normImmunityLoss;
 
-    private int population;
-    private int infected;
-    private int susceptible;
-    private int recovered;
+    private int
+        initial = 1,
+        durationStart = 7,
+        durationLen,
+        immunityStart = 14,
+        immunityLen;
 
-    private int infectedDeaths;
-    private int nonInfectedDeaths;
-    private int recoveredDeaths;
+    private int
+        population,
+        infected,
+        susceptible,
+        recovered;
+
+    private int
+        infectedDeaths,
+        nonInfectedDeaths,
+        recoveredDeaths;
 
     private int births; // TODO: simulate life span and eras?
 
@@ -56,7 +64,7 @@ public class SIRSModel {
         for(int i = 0; i < rows; i++)
             for(int j = 0; j < cols; j++) {
                 grid[i][j] = State.NON_INFECTED;
-                buffer[i][j] = State.NON_INFECTED;
+                buffer[i][j] = State.INFECTED;
             }
     }
 
@@ -109,7 +117,7 @@ public class SIRSModel {
             case INFECTED:
                 //inverse relation to (iterations or duration)
                 double recoveryChance = rand.nextDouble();
-                if(recoveryChance < recoveryRate) { //recovered
+                if(recoveryChance < normRecovery) { //recovered
                     buffer[i][j] = State.RECOVERED;
                     updateRecovered();
                 }
@@ -121,7 +129,7 @@ public class SIRSModel {
             case RECOVERED:
                 //reduces immunity after a certain number of iterations
                 double immunityLossChance = rand.nextDouble();
-                if(immunityLossChance < immunityLossRate) {//immunityDecay) {
+                if(immunityLossChance < normImmunityLoss) {//immunityDecay) {
                     buffer[i][j] = State.NON_INFECTED;
                     updateImmunityLoss();
                 }
@@ -161,7 +169,7 @@ public class SIRSModel {
                         //distance = 1.0/(Math.abs(i) + Math.abs(j));
                         distance = 1.0;
                         double infectionChance = rand.nextDouble() * distance;
-                        if(infectionChance < infectionRate) {
+                        if(infectionChance < normInfection) {
                             return true; //break out of loop, reduce computation
                         }
                     }
@@ -186,7 +194,7 @@ public class SIRSModel {
                         //distance = 1.0/(Math.abs(i) + Math.abs(j));
                         distance = 1.0;
                         double infectionChance = rand.nextDouble() * distance;
-                        if(infectionChance < infectionRate) {
+                        if(infectionChance < normInfection) {
                             return true; //break out of loop, reduce computation
                         }
                     }
@@ -202,6 +210,20 @@ public class SIRSModel {
         if(j < 0 || j >= grid[0].length)
             return false;
         return true;
+    }
+
+    public void setInitial(int initial) {
+        this.initial = initial;
+    }
+    public void setTimeNormalizer(double timeRatio) { //100% = 40, 0% = 1000);
+        timeNormalizer = 20 + fade(1-timeRatio)*(1000-20);
+        normInfection = infectionRate/timeNormalizer;
+        normRecovery = recoveryRate/timeNormalizer;
+        normImmunityLoss = immunityLossRate/timeNormalizer;
+    }
+    private double fade(double ratio) { return 6*Math.pow(ratio, 5.0)-15*Math.pow(ratio,4.0)+10*Math.pow(ratio,3.0); };
+    private double normalizeRate(double val) {
+        return val / timeNormalizer;
     }
 
     public int getPopulation() {
