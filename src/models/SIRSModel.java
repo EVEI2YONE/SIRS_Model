@@ -218,7 +218,6 @@ public class SIRSModel {
     }
     public void setRadius(int rad) {
         radius = rad;
-        System.out.println(radius);
     }
 
     public void setTimeNormalizer(double timeRatio) { //100% = 40, 0% = 1000);
