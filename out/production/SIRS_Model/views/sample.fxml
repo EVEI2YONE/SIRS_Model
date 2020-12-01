@@ -31,6 +31,7 @@
                       <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
                         <Label text="Statistics">
@@ -42,10 +43,11 @@
                         <Label text="Infected: " GridPane.rowIndex="2" />
                         <Label text="Recovered: " GridPane.rowIndex="3" />
                         <Label text="Initial Infected: " GridPane.rowIndex="4" />
-                        <TextArea fx:id="textArea_initial" maxHeight="20.0" prefHeight="320.0" prefWidth="60.0" text="1" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                         <Label fx:id="label_time_elapsed" text="0 s" GridPane.columnIndex="1" />
                         <Label fx:id="label_susceptible" text="0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label fx:id="label_infected" text="1" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label fx:id="label_recovered" text="0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                         <TextArea fx:id="textArea_initial" maxHeight="20.0" prefHeight="320.0" prefWidth="60.0" text="1" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                      </children>
                      <VBox.margin>
                         <Insets />
@@ -60,32 +62,39 @@
                <children>
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
+                        <Label text="Radius: " />
+                        <Label fx:id="label_radius" text="1" />
+                     </children>
+                  </HBox>
+                   <Slider fx:id="slider_radius" blockIncrement="1.0" majorTickUnit="2.0" max="15.0" min="1.0" minorTickCount="1" showTickLabels="true" snapToTicks="true" value="1.0" />
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
                         <Label text="Time Rate: " />
                         <Label fx:id="label_time" text="50%" />
                      </children>
                   </HBox>
-                   <Slider fx:id="slider_time" blockIncrement="1.0" minorTickCount="5" showTickLabels="true" showTickMarks="true" value="50.0" />
+                   <Slider fx:id="slider_time" blockIncrement="1.0" minorTickCount="5" showTickLabels="true" value="50.0" />
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
                         <Label text="Infection Rate: " />
                         <Label fx:id="label_infection_rate" text="30%" />
                      </children>
                   </HBox>
-                  <Slider fx:id="slider_infection" blockIncrement="1.0" minorTickCount="5" showTickLabels="true" showTickMarks="true" value="30.0" />
+                  <Slider fx:id="slider_infection" blockIncrement="1.0" minorTickCount="5" showTickLabels="true" value="30.0" />
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
                         <Label text="Recovery Rate: " />
                         <Label fx:id="label_recovery_rate" text="20%" />
                      </children>
                   </HBox>
-                  <Slider fx:id="slider_recovery" blockIncrement="1.0" minorTickCount="5" showTickLabels="true" showTickMarks="true" value="20.0" />
+                  <Slider fx:id="slider_recovery" blockIncrement="1.0" minorTickCount="5" showTickLabels="true" value="20.0" />
                   <HBox prefHeight="100.0" prefWidth="200.0">
                      <children>
                         <Label text="Immunity Loss Rate: " />
                         <Label fx:id="label_immunity_loss_rate" text="30%" />
                      </children>
                   </HBox>
-                  <Slider fx:id="slider_immunity_loss" blockIncrement="1.0" minorTickCount="5" showTickLabels="true" showTickMarks="true" value="30.0" />
+                  <Slider fx:id="slider_immunity_loss" blockIncrement="1.0" minorTickCount="5" showTickLabels="true" value="30.0" />
                </children>
             </VBox>
          </children>
