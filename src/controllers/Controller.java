@@ -13,7 +13,7 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
-    SIRSController sirs = new SIRSController();
+    controllers.SIRSController sirs = new controllers.SIRSController();
     @FXML
     Canvas canvas;
     @FXML
@@ -23,13 +23,15 @@ public class Controller implements Initializable {
     public void onAction(ActionEvent actionEvent) {
         if(actionEvent.getSource() == play) {
             if(isReset) {
-               isReset = false;
-               paused = false;
-               sirs.setCanvas(canvas);
-               Thread t = new Thread(() -> {
-                   sirs.beginSimulation();
-               });
-               t.start();
+                sirs.model.setInitial(getInitial());
+                sirs.clearSimulation();
+                isReset = false;
+                paused = false;
+                sirs.setCanvas(canvas);
+                Thread t = new Thread(() -> {
+                    sirs.beginSimulation();
+                });
+                t.start();
             }
             else if(paused) {
                 sirs.continueSimulation();
@@ -49,10 +51,12 @@ public class Controller implements Initializable {
         }
     }
 
+    @FXML
+    Label label_time_elapsed;
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         sirs.setCanvas(canvas);
-        sirs.setLabels(label_susceptible, label_infected, label_recovered);
+        sirs.setLabels(label_susceptible, label_infected, label_recovered, label_time_elapsed);
         width = (int)canvas.getWidth();
         height = (int)canvas.getHeight();
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -69,8 +73,8 @@ public class Controller implements Initializable {
 
     @FXML
     Label label_susceptible,
-            label_infected,
-            label_recovered;
+          label_infected,
+          label_recovered;
 
     public  void setUpStats() {
         label_susceptible.setText(sirs.model.getSusceptible() + "");
@@ -99,23 +103,48 @@ public class Controller implements Initializable {
         });
     }
 
+    public int getInitial() {
+        int initial;
+        try {
+            strippingNewLines = true;
+            String t = textArea_initial.getText();
+            t = t.replaceAll("\\n", "");
+            textArea_initial.setText(t);
+            initial = Integer.parseInt(textArea_initial.getText());
+            sirs.model.setInitial(initial);
+        } catch(Exception ex) {
+            System.out.println("Invalid initial input");
+            initial = 0;
+        }
+        return initial;
+    }
+
     @FXML
-    Slider slider_infection,
+    Slider slider_radius,
+           slider_infection,
            slider_recovery,
            slider_immunity_loss,
            slider_time;
     @FXML
-    Label label_infection_rate,
+    Label label_radius,
+          label_infection_rate,
           label_recovery_rate,
           label_immunity_loss_rate,
           label_time;
 
     public void setUpSliders() {
         sirs.model.setTimeNormalizer(.50);
+        sirs.model.setRadius(1);
         sirs.model.updateRate("infection", .3);
         sirs.model.updateRate("recovery", .2);
         sirs.model.updateRate("immunityLoss", .3);
 
+        slider_radius.valueProperty().addListener(new ChangeListener<Number>() {
+            public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
+                sirs.model.setRadius((int)new_val.doubleValue());
+                label_radius.setText((int)new_val.doubleValue() + "");
+            }
+        });
         slider_time.valueProperty().addListener(new ChangeListener<Number>() {
             public void changed(ObservableValue<? extends Number> ov, Number old_val, Number new_val) {
                 sirs.model.setTimeNormalizer(new_val.doubleValue()/100.0);

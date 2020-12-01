@@ -165,9 +165,9 @@ public class SIRSController {
     }
 
     private long timeElapsed = 0;
-    long frameLimit = 30, start, end;
+    long frameLimit = 30, start, end, time;
     long nanoSeconds = 1000000000;
-    long frameCap = nanoSeconds/frameLimit;
+    long frameCap = nanoSeconds/frameLimit/2;
 
     boolean thread_updating, thread_displaying;
 
@@ -196,42 +196,47 @@ public class SIRSController {
                 Platform.runLater(() -> {
                     updateStats();
                 });
-                if(frames == frameLimit) {
+                if(frames >= frameLimit) {
                     frames -= frameLimit;
                     seconds++;
                 }
                 timeElapsed -= frameCap;
-                if (!thread_updating && !thread_displaying) {
-                    Platform.runLater(() -> {
-                        thread_updating = true;
-                        parseGrid(size - 1, "update");
-                        model.swap();
-                        thread_updating = false;
-                    });
-                }
-                if (!thread_displaying) {
-                    Platform.runLater(() -> {
-                        thread_displaying = true;
-                        parseGrid(size - 1, "display");
-                        thread_displaying = false;
-                    });
+                if(timeElapsed <= frameCap) {
+                    if (!thread_updating && !thread_displaying) {
+                        Platform.runLater(() -> {
+                            thread_updating = true;
+                            parseGrid(size - 1, "update");
+                            model.swap();
+                            thread_updating = false;
+                        });
+                    }
+                    if (!thread_displaying) {
+                        Platform.runLater(() -> {
+                            thread_displaying = true;
+                            parseGrid(size - 1, "display");
+                            thread_displaying = false;
+                        });
+                    }
                 }
                 frames++;
             }
             end = System.nanoTime();
-            timeElapsed += end - start;
+            time = end-start;
+            timeElapsed += time;
         }
     }
 
-    Label susceptible, infected, recovered;
-    public void setLabels(Label label_susceptible, Label label_infected, Label label_recovered) {
+    Label susceptible, infected, recovered, time_elapsed;
+    public void setLabels(Label label_susceptible, Label label_infected, Label label_recovered, Label label_time_elapsed) {
         susceptible = label_susceptible;
         infected = label_infected;
         recovered = label_recovered;
+        time_elapsed = label_time_elapsed;
     }
     public void updateStats(){
         susceptible.setText(String.format("%d", model.getSusceptible()));
         infected.setText(String.format("%d", model.getInfected()));
         recovered.setText(String.format("%d", model.getRecovered()));
+        time_elapsed.setText(String.format("%d s", (int) (seconds)));
     }
 }

@@ -20,7 +20,7 @@ public class SIRSModel {
     public enum State { NON_INFECTED, INFECTED, RECOVERED, INFECTED_DEAD, NON_INFECTED_DEAD, EMPTY, BORDER, TRANSPORTATION };
     private Random rand = new Random();
 
-    public int radius = 5; //manhattan distance or layers?
+    public int radius = 1; //manhattan distance or layers?
     public State[][] grid, buffer;
     public String searchType = "layer"; //"manhattan" or "layer"
     private double
@@ -91,12 +91,13 @@ public class SIRSModel {
     }
 
     public void init() {
-        int radius = 3;
         //selected random point
-        int i = rand.nextInt(grid.length);
-        int j = rand.nextInt(grid[0].length);
-        grid[i][j] = State.INFECTED;
-        updateInfected();
+        for(int k = 0; k < initial; k++) {
+            int i = rand.nextInt(grid.length);
+            int j = rand.nextInt(grid[0].length);
+            grid[i][j] = State.INFECTED;
+            updateInfected();
+        }
     }
 
     public void update(int i, int j) {
@@ -215,6 +216,11 @@ public class SIRSModel {
     public void setInitial(int initial) {
         this.initial = initial;
     }
+    public void setRadius(int rad) {
+        radius = rad;
+        System.out.println(radius);
+    }
+
     public void setTimeNormalizer(double timeRatio) { //100% = 40, 0% = 1000);
         timeNormalizer = 20 + fade(1-timeRatio)*(1000-20);
         normInfection = infectionRate/timeNormalizer;
